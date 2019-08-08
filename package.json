@@ -1,0 +1,11 @@
+{
+  "name": "stimulus_reflex_client",
+  "version": "0.3.4",
+  "main": "./src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com:hopsoft/stimulus_reflex_client.git"
+  },
+  "author": "Nathan Hopkins",
+  "license": "MIT"
+}

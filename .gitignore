@@ -1,0 +1,4 @@
+/doc/
+/tmp/
+/node_modules/
+*.tgz
