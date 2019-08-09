@@ -1,6 +1,6 @@
 {
   "name": "stimulus_reflex",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "main": "./src/index.js",
   "repository": {
     "type": "git",
