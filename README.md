@@ -27,7 +27,10 @@ yarn add stimulus_reflex
 import { StimulusReflexController } from 'stimulus_reflex';
 
 export default class extends StimulusReflexController {
-  doStuff() {
+  doStuff(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
     // trigger a server side reflex and a re-render
     this.stimulate('ExampleReflex#do_stuff', arg1, arg2, ...);
   }
