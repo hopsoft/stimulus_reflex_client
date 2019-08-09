@@ -8,10 +8,6 @@
   },
   "author": "Nathan Hopkins",
   "license": "MIT",
-  "devDependencies": {
-    "webpack": "^4.39.1",
-    "webpack-cli": "^3.3.6"
-  },
   "dependencies": {
     "actioncable": "^5.2.3",
     "cable_ready_client": "^3.0.4",

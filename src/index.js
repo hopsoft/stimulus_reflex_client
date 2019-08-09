@@ -5,9 +5,9 @@ import CableReady from 'cable_ready_client';
 let timeout;
 let wait = 25;
 
-CableReady.App = ActionCable.createConsumer();
+CableReady.App = {};
 CableReady.App.cable = ActionCable.createConsumer();
-CableReady.App.subscription = App.cable.subscriptions.create(
+CableReady.App.subscription = CableReady.App.cable.subscriptions.create(
   'StimulusReflex::Channel',
   {
     received: data => {
