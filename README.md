@@ -2,6 +2,12 @@
 
 JavaScript client for [StimulusReflex](https://github.com/hopsoft/stimulus_reflex)
 
+## Installation
+
+```
+yarn add stimulus_reflex
+```
+
 ## Usage
 
 ```html
