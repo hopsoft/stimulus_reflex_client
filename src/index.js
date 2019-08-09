@@ -34,6 +34,4 @@ class StimulusReflexController extends Controller {
   }
 }
 
-export default {
-  StimulusReflexController,
-};
+export { StimulusReflexController };
