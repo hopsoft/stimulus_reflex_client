@@ -7,5 +7,14 @@
     "url": "git+https://github.com:hopsoft/stimulus_reflex_client.git"
   },
   "author": "Nathan Hopkins",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "webpack": "^4.39.1",
+    "webpack-cli": "^3.3.6"
+  },
+  "dependencies": {
+    "actioncable": "^5.2.3",
+    "cable_ready_client": "^3.0.4",
+    "stimulus": "^1.1.1"
+  }
 }
