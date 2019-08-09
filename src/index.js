@@ -1,6 +1,5 @@
-import { Controller } from 'stimulus';
 import ActionCable from 'actioncable';
-import CableReady from 'cable_ready_client';
+import CableReady from 'cable_ready';
 
 let timeout;
 let wait = 25;

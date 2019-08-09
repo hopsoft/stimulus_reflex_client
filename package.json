@@ -10,7 +10,6 @@
   "license": "MIT",
   "dependencies": {
     "actioncable": "^5.2.3",
-    "cable_ready_client": "^3.0.4",
-    "stimulus": "^1.1.1"
+    "cable_ready": "^4.0.0"
   }
 }
