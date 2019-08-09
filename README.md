@@ -6,6 +6,7 @@ JavaScript client for [StimulusReflex](https://github.com/hopsoft/stimulus_refle
 
 ```html
 <!-- app/views/pages/example.html.erb -->
+
 <html>
 <head></head>
   <body>
@@ -16,7 +17,7 @@ JavaScript client for [StimulusReflex](https://github.com/hopsoft/stimulus_refle
 
 ```javascript
 // app/javascript/controllers/example_controller.js
-import { Controller } from 'stimulus';
+
 import { StimulusReflexController } from 'stimulus_reflex';
 
 export default class extends StimulusReflexController {
@@ -29,6 +30,7 @@ export default class extends StimulusReflexController {
 
 ```ruby
 # app/reflexes/example_reflex.rb
+
 class ExampleReflex < StimulusReflex::Reflex
   def do_stuff(arg1, arg2, ...)
     # computing...
