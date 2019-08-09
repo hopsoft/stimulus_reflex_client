@@ -5,11 +5,11 @@ import CableReady from 'cable_ready_client';
 let timeout;
 let wait = 25;
 
-CableReady.App = {};
-CableReady.App.cable = ActionCable.createConsumer();
-CableReady.App.subscription = CableReady.App.cable.subscriptions.create(
-  'StimulusReflex::Channel',
-  {
+CableReady.App = window.App || {};
+CableReady.App.cable = CableReady.App.cable || ActionCable.createConsumer();
+CableReady.App.stimulusReflexChannel =
+  CableReady.App.stimulusReflexChannel ||
+  CableReady.App.cable.subscriptions.create('StimulusReflex::Channel', {
     received: data => {
       if (data.cableReady) {
         clearTimeout(timeout);
@@ -18,20 +18,21 @@ CableReady.App.subscription = CableReady.App.cable.subscriptions.create(
         }, wait);
       }
     },
-  }
-);
+  });
 
-class StimulusReflexController extends Controller {
-  stimulate() {
-    clearTimeout(timeout);
-    let args = Array.prototype.slice.call(arguments);
-    let target = args.shift();
-    CableReady.App.subscription.send({
-      url: location.href,
-      target: target,
-      args: args,
+export default {
+  register: controller => {
+    Object.assign(controller, {
+      stimulate() {
+        clearTimeout(timeout);
+        let args = Array.prototype.slice.call(arguments);
+        let target = args.shift();
+        CableReady.App.stimulusReflexChannel.send({
+          url: location.href,
+          target: target,
+          args: args,
+        });
+      },
     });
-  }
-}
-
-export { StimulusReflexController };
+  },
+};
