@@ -1,44 +1,39 @@
-let cableReadyTimeout;
-let defaultRenderDelay = 10;
+import { Controller } from 'stimulus';
+import ActionCable from 'actioncable';
+import CableReady from 'cable_ready_client';
 
-const connect = () => {
-  if (document.querySelector('body[data-cable]')) {
-    window.App || (window.App = {});
-    App.cable || (App.cable = ActionCable.createConsumer());
-    App.stimulusReflex ||
-      (App.stimulusReflex = App.cable.subscriptions.create(
-        'StimulusReflex::Channel',
-        {
-          received: data => {
-            if (data.cableReady) {
-              clearTimeout(cableReadyTimeout);
-              cableReadyTimeout = setTimeout(() => {
-                CableReady.perform(data.operations);
-              }, StimulusReflex.renderDelay || defaultRenderDelay);
-            }
-          },
-        }
-      ));
+let timeout;
+let wait = 25;
+
+CableReady.App = ActionCable.createConsumer();
+CableReady.App.cable = ActionCable.createConsumer();
+CableReady.App.subscription = App.cable.subscriptions.create(
+  'StimulusReflex::Channel',
+  {
+    received: data => {
+      if (data.cableReady) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          CableReady.perform(data.operations);
+        }, wait);
+      }
+    },
   }
-};
+);
 
-document.addEventListener('DOMContentLoaded', connect);
-const methods = {
+class StimulusReflexController extends Controller {
   stimulate() {
-    if (!App.stimulusReflex)
-      throw "ActionCable connection not established! Don't forget to opt-in with: body[data-cable]";
-    clearTimeout(cableReadyTimeout);
+    clearTimeout(timeout);
     let args = Array.prototype.slice.call(arguments);
     let target = args.shift();
-    App.stimulusReflex.send({
+    CableReady.App.subscription.send({
       url: location.href,
       target: target,
       args: args,
     });
-  },
-};
+  }
+}
 
-export const register = controller => {
-  Object.assign(controller, methods);
-  return controller;
+export default {
+  StimulusReflexController,
 };
