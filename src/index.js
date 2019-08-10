@@ -1,37 +1,64 @@
 import ActionCable from 'actioncable';
 import CableReady from 'cable_ready';
 
-let timeout;
-let wait = 25;
+const app = window.App || {};
+app.StimulusReflex = app.StimulusReflex || {};
+app.StimulusReflex.consumer =
+  app.StimulusReflex.consumer || ActionCable.createConsumer();
+app.StimulusReflex.subscriptions = app.StimulusReflex.subscriptions || {};
 
-CableReady.App = window.App || {};
-CableReady.App.cable = CableReady.App.cable || ActionCable.createConsumer();
-CableReady.App.stimulusReflexChannel =
-  CableReady.App.stimulusReflexChannel ||
-  CableReady.App.cable.subscriptions.create('StimulusReflex::Channel', {
-    received: data => {
-      if (data.cableReady) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => {
-          CableReady.perform(data.operations);
-        }, wait);
+const createSubscription = controller => {
+  const { channel, room } = controller.StimulusReflex;
+  const id = `${channel}${room}`;
+  const renderDelay = controller.StimulusReflex.renderDelay || 25;
+
+  const subscription =
+    app.StimulusReflex.subscriptions[id] ||
+    app.StimulusReflex.consumer.subscriptions.create(
+      { channel, room },
+      {
+        received: data => {
+          if (data.cableReady) {
+            clearTimeout(controller.StimulusReflex.timeout);
+            controller.StimulusReflex.timeout = setTimeout(() => {
+              CableReady.perform(data.operations);
+            }, renderDelay);
+          }
+        },
       }
+    );
+
+  app.StimulusReflex.subscriptions[id] = subscription;
+  controller.StimulusReflex.subscription = subscription;
+};
+
+const extend = controller => {
+  Object.assign(controller, {
+    stimulate() {
+      clearTimeout(controller.StimulusReflex.timeout);
+      const url = location.href;
+      const { room } = controller.StimulusReflex;
+      let args = Array.prototype.slice.call(arguments);
+      let target = args.shift();
+      controller.StimulusReflex.subscription.send({ target, args, url, room });
     },
   });
+};
 
 export default {
-  register: controller => {
-    Object.assign(controller, {
-      stimulate() {
-        clearTimeout(timeout);
-        let args = Array.prototype.slice.call(arguments);
-        let target = args.shift();
-        CableReady.App.stimulusReflexChannel.send({
-          url: location.href,
-          target: target,
-          args: args,
-        });
-      },
-    });
+  //
+  // Registers a Stimulus controller and extends it with StimulusReflex behavior
+  // The room can be specified via a data attribute on the Stimulus controller element i.e. data-room="12345"
+  //
+  // controller - the Stimulus controller
+  // options - optional configuration
+  //   * renderDelay - amount of time to delay before mutating the DOM (adds latency but reduces jitter)
+  //
+  register: (controller, options = {}) => {
+    const channel = 'StimulusReflex::Channel';
+    const room = controller.element.dataset.room || '';
+    controller.StimulusReflex = { ...options, channel, room };
+    createSubscription(controller);
+    extend(controller);
   },
 };
